@@ -13,8 +13,8 @@
     },
     "rules": {
         "indent": [
-            "error",
-            "tab"
+            "warn",
+            "single"
         ],
         "no-unused-vars": [
             "warn"
