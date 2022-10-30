@@ -13,11 +13,11 @@ productRouter.post('/', (req, res) => {
   return res.status(200).send('Producto creado')
 })
 
-productRouter.post('/delete/:id', (req, res) => {
+productRouter.delete('/delete/:id', (req, res) => {
   return res.status(200).send('Producto eliminado')
 })
 
-productRouter.post('/update/:id', (req, res) => {
+productRouter.put('/:id', (req, res) => {
   return res.status(200).send('Producto actualizado')
 })
 
