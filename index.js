@@ -5,10 +5,14 @@ import cors from 'cors'
 
 const app = express()
 
+const options = {
+  origin: '*'
+}
+
 // EXPRESS IMPORTS
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(cors())
+app.use(cors(options))
 
 
 // ROUTES
