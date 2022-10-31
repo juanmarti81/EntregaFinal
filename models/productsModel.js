@@ -1,26 +1,24 @@
 import fs from 'fs';
 
 export default class ProductModel {
-  constructor() {
-    this.file = "./models/products.db.json"
+  constructor(filename) {
+    this.file = `./models/${filename}.db.json`
   }
 
-  createProduct = async (product) => {
+  create = async (product) => {
     try {
-      const fileContent = await fs.promises.readFile(this.file, 'utf-8')
-      let contentParsed = JSON.parse(fileContent)
-      const fecha = new Intl.DateTimeFormat('es-AR').format(Date.now())
-      const newProduct = {...product, id: contentParsed.length + 1, timestamp: fecha}
-      contentParsed.push(newProduct)
-      console.log(contentParsed)
-      await fs.promises.writeFile(this.file, JSON.stringify(contentParsed, 'utf-8'))
-      return {response: 'success'}
+      const fileContent = await this.getAll()
+      const fecha = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
+      const newProduct = {...product, id: fileContent.length + 1, timestamp: fecha}
+      fileContent.push(newProduct)
+      await fs.promises.writeFile(this.file, JSON.stringify(fileContent, 'utf-8'))
+      return {newProduct}
     } catch (error) {
-      return {'response': 'error: ' + error}
+      return {response: 'error: ' + error}
     }
   }
 
-  getAllProducts = async () => {
+  getAll = async () => {
     try {
         const file = await fs.promises.readFile(this.file, 'utf-8')
         return JSON.parse(file)
@@ -29,30 +27,55 @@ export default class ProductModel {
     }
   }
 
-  getOneProduct = async (id) => {
-    console.log(id)
-    const products = await this.getAllProducts()
-    console.log("Todos los productos: ", products)
-    const filteredProduct = products.filter(e => e.id === id)
-    console.log("Producto: ", filteredProduct)
-    return filteredProduct
+  getOnlyOne = async (id) => {
+    try {
+      const products = await this.getAll()
+      const filteredProduct = products.filter(e => e.id === id)
+      return filteredProduct
+    } catch (error) {
+      return {response: error}
+    }
+    
   }
 
-  deleteProduct = async (id) => {
-    const products = await this.getAllProducts()
-    const filteredProduct = products.filter(e => e.id != id)
-    await fs.promises.writeFile(this.file, JSON.stringify(filteredProduct),'utf-8')
-    return {response: "success"}
+  delete = async (id) => {
+    try {
+      const products = await this.getAll()
+      const filteredProduct = products.filter(e => e.id != id)
+      await fs.promises.writeFile(this.file, JSON.stringify(filteredProduct),'utf-8')
+      return {response: "success"}
+    } catch (error) {
+      return {response: error}
+    }
+    
+  }
+
+  update = async (id, product) => {
+    try {
+      const products = await this.getAll()
+      const objIndex = products.findIndex((obj => obj.id === id))
+      const foundProduct = products[objIndex];
+      products[objIndex] = {...foundProduct, ...product}
+
+      await fs.promises.writeFile(this.file, JSON.stringify(products),'utf-8')
+      return {product}
+    } catch (error) {
+      return {response: error}
+    }
+
   }
 
   updateProduct = async (id, product) => {
-    console.log(product)
-    const products = await this.getAllProducts()
-    const objIndex = products.findIndex((obj => obj.id == id))
-    products[objIndex] = {...product, id: Number(id)}
+    console.log(id, product)
+    try {
+      const products = await this.getAll()
+      const objIndex = products.findIndex((obj) => obj.id === Number(id))
+      products[objIndex] = product
+      await fs.promises.writeFile(this.file, JSON.stringify(products),'utf-8')
+      return {product}
+    } catch (error) {
+      return {response: error}
+    }
 
-    // console.log(products)
-    await fs.promises.writeFile(this.file, JSON.stringify(products),'utf-8')
-    return {response: "success"}
   }
 }

@@ -1,42 +1,47 @@
 import express from 'express'
-import productModel from '../../models/productsModel.js'
+// import productModel from '../../models/productsModel.js'
+import { ProductDAO } from "../../DAO/index.js"
 
 const productRouter = express.Router()
 
-let productmodel = new productModel()
-
+// CREATE A PRODUCT
 productRouter.post('/', async (req, res) => {
   const data = req.body
-  console.log(data)
-  const response = await productmodel.createProduct(data)
-  console.log(response)
+  const response = await ProductDAO.create(data)
   if (response.response === "success"){
-    return res.status(200).send(response)
+    return res.status(200).send({data: response})
   } else {
-    return res.status(500).send(response)
+    return res.status(500).send({data: response})
   }
 })
 
+// GET ALL PRODUCTS OR ONE PRODUCT
 productRouter.get('/:id?', async (req, res) => {
   if (req.params.id){
-    console.log("PARAMETROS: ", req.params.id)
-    const data = await productmodel.getOneProduct(Number(req.params.id))
-    console.log(data)
-    return res.status(200).send({data:data})
+    const data = await ProductDAO.getOnlyOne(Number(req.params.id))
+    return res.status(200).send({data: data})
   }
-  const data = await productmodel.getAllProducts()
+  const data = await ProductDAO.getAll()
   return res.status(200).send({data: data})
 })
 
 
 productRouter.delete('/delete/:id', async (req, res) => {
-  const data = await productmodel.deleteProduct(req.params.id)
+  if (!req.params.id) {
+    return res.status(400).send({response: "Debe indicar el carrito a eliminar"})
+  }
+  const data = await ProductDAO.delete(req.params.id)
   return res.status(200).send({data: data})
 })
 
 productRouter.put('/:id', async (req, res) => {
-  const data = await productmodel.updateProduct(req.params.id, req.body)
-  return res.status(200).send('Producto actualizado')
+  if (!req.params.id || !req.body) {
+    return res.status(400).send({data:"Faltaron datos necesarios para realizar la actualización"})
+  }
+  const {id} = req.params
+  const body = req.body
+  const data = await ProductDAO.updateProduct(id, body)
+  return res.status(200).send({data: data})
 })
 
 

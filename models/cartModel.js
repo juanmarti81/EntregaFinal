@@ -9,7 +9,7 @@ export default class CartModel {
     try {
       const fileContent = await fs.promises.readFile(this.file, 'utf-8')
       let contentParsed = JSON.parse(fileContent)
-      const fecha = new Intl.DateTimeFormat('es-AR').format(Date.now())
+      const fecha = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
       const newCart = {...cart, id: contentParsed.length + 1, timestamp: fecha, products: []}
       fileContent.push({...newCart})
       return newCart
@@ -27,7 +27,7 @@ export default class CartModel {
     try {
       const fileContent = await fs.promises.readFile(this.file, 'utf-8')
       let contentParsed = JSON.parse(fileContent)
-      const fecha = new Intl.DateTimeFormat('es-AR').format(Date.now())
+      const fecha = new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString()
       contentParsed.map(e => {
         if (e.id === id) {
           e.products.push({...cart, timestamp: fecha})

@@ -16,8 +16,8 @@ app.use(cors(options))
 
 
 // ROUTES
-app.use('/products/', productRouter)
-app.use('/cart/', cartRouter)
+app.use('/products', productRouter)
+app.use('/cart', cartRouter)
 
 
 // SERVER START
