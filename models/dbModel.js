@@ -5,6 +5,7 @@ export default class ProductModel {
     this.file = `./models/${filename}.db.json`
   }
 
+  // CREATE A NEW RECORD IN DB
   create = async (product) => {
     try {
       const fileContent = await this.getAll()
@@ -14,10 +15,11 @@ export default class ProductModel {
       await fs.promises.writeFile(this.file, JSON.stringify(fileContent, 'utf-8'))
       return {newProduct}
     } catch (error) {
-      return {response: 'error: ' + error}
+      return {response: "error"}
     }
   }
 
+  // RETURN ALL RECORDS IN DB
   getAll = async () => {
     try {
         const file = await fs.promises.readFile(this.file, 'utf-8')
@@ -27,17 +29,19 @@ export default class ProductModel {
     }
   }
 
+  // RETURN ONE RECORD BY ID
   getOnlyOne = async (id) => {
     try {
       const products = await this.getAll()
       const filteredProduct = products.filter(e => e.id === id)
       return filteredProduct
     } catch (error) {
-      return {response: error}
+      return {response: "error"}
     }
     
   }
 
+  // DELETE ONE RECORD
   delete = async (id) => {
     try {
       const products = await this.getAll()
@@ -45,11 +49,12 @@ export default class ProductModel {
       await fs.promises.writeFile(this.file, JSON.stringify(filteredProduct),'utf-8')
       return {response: "success"}
     } catch (error) {
-      return {response: error}
+      return {response: "error"}
     }
     
   }
 
+  // UPDATE ONE RECORD
   update = async (id, product) => {
     try {
       const products = await this.getAll()
@@ -60,11 +65,12 @@ export default class ProductModel {
       await fs.promises.writeFile(this.file, JSON.stringify(products),'utf-8')
       return {product}
     } catch (error) {
-      return {response: error}
+      return {response: "error"}
     }
 
   }
 
+  // ! UPDATE ONE PRODUCT
   updateProduct = async (id, product) => {
     console.log(id, product)
     try {
@@ -74,7 +80,7 @@ export default class ProductModel {
       await fs.promises.writeFile(this.file, JSON.stringify(products),'utf-8')
       return {product}
     } catch (error) {
-      return {response: error}
+      return {response: "error"}
     }
 
   }
