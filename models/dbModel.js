@@ -2,7 +2,7 @@ import fs from 'fs';
 
 export default class ProductModel {
   constructor(filename) {
-    this.file = `./models/${filename}.db.json`
+    this.file = `../DB/${filename}.db.json`
   }
 
   // CREATE A NEW RECORD IN DB
