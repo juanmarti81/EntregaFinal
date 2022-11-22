@@ -3,3 +3,5 @@ node_modules/
 .env copy
 .gitignore
 .vscode/
+DB/firebase/config_firebase.json
+DB/firebase/config_firebase copy.json
